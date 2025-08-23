@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './features/database/database.module';
+import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './features/users/users.module';
 
 @Module({
