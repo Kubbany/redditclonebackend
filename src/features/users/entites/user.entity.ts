@@ -8,10 +8,10 @@ class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column({ unique: true })
+  @Column()
   password: string;
 }
 
