@@ -8,6 +8,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { PostsModule } from './features/posts/posts.module';
 import { CommentsModule } from './features/comments/comments.module';
+import { VotesModule } from './features/votes/votes.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CommentsModule } from './features/comments/comments.module';
     UsersModule,
     PostsModule,
     CommentsModule,
+    VotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

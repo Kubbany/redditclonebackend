@@ -13,7 +13,6 @@ import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
 import { Comment } from 'src/features/comments/entites/comments.entity';
-import { log } from 'console';
 
 @Injectable()
 export class PostsService {
@@ -115,8 +114,6 @@ export class PostsService {
     if (!post) {
       throw new NotFoundException('Post Not Found');
     }
-    log(post.authorId);
-    log(authorId);
     if (post.authorId !== authorId) {
       throw new ForbiddenException("You Can't Delete This Post");
     }
