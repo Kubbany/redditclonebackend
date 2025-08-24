@@ -1,10 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../entites/post.entity';
 import { Repository } from 'typeorm';
 import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
 import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
 import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
+import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
+import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
 
 @Injectable()
 export class PostsService {
@@ -66,19 +72,31 @@ export class PostsService {
       authorName: post.authorName,
     };
   }
-  async getPostsByAuthorId(authorId: number): Promise<GetPostsResponseDTO[]> {
-    const posts = await this.postsRepository.find({
-      where: { authorId },
-      order: { id: 'DESC' },
-    });
 
-    return posts.map((post) => ({
-      id: post.id,
-      title: post.title,
-      description: post.description,
-      imageUrl: post.imageUrl,
-      authorId: post.authorId,
-      authorName: post.authorName,
-    }));
+  async updatePost(
+    postId: number,
+    authorId: number,
+    updatePostRequestDto: UpdatePostRequestDTO,
+  ): Promise<UpdatePostResponseDTO> {
+    const post = await this.postsRepository.findOne({
+      where: { id: postId },
+    });
+    if (!post) {
+      throw new NotFoundException('Post Not Found');
+    }
+    if (post.authorId !== authorId) {
+      throw new ForbiddenException("You Can't Update This Post");
+    }
+    post.title = updatePostRequestDto.title ?? post.title;
+    post.description = updatePostRequestDto.description ?? post.description;
+    const updatedPost = await this.postsRepository.save(post);
+    return {
+      id: updatedPost.id,
+      title: updatedPost.title,
+      description: updatedPost.description,
+      imageUrl: updatedPost.imageUrl,
+      authorId: updatedPost.authorId,
+      authorName: updatedPost.authorName,
+    };
   }
 }
