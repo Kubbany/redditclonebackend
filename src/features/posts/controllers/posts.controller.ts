@@ -36,4 +36,12 @@ export class PostsController {
   async getPostById(@Param('id') id: number): Promise<GetPostsResponseDTO> {
     return await this.postsService.getPostById(id);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('my-posts')
+  async getMyPosts(
+    @CurrentUser('sub') authorId: number,
+  ): Promise<GetPostsResponseDTO[]> {
+    return await this.postsService.getPostsByAuthorId(authorId);
+  }
 }

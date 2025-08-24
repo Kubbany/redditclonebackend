@@ -12,13 +12,13 @@ export class AuthController {
   async register(
     @Body() registerRequestDTO: RegisterRequestDTO,
   ): Promise<RegisterResponseDTO> {
-    return this.authService.register(registerRequestDTO);
+    return await this.authService.register(registerRequestDTO);
   }
 
   @Post('login')
   async login(
     @Body() loginRequestDTO: LoginRequestDTO,
   ): Promise<{ token: string }> {
-    return this.authService.login(loginRequestDTO);
+    return await this.authService.login(loginRequestDTO);
   }
 }

@@ -66,4 +66,19 @@ export class PostsService {
       authorName: post.authorName,
     };
   }
+  async getPostsByAuthorId(authorId: number): Promise<GetPostsResponseDTO[]> {
+    const posts = await this.postsRepository.find({
+      where: { authorId },
+      order: { id: 'DESC' },
+    });
+
+    return posts.map((post) => ({
+      id: post.id,
+      title: post.title,
+      description: post.description,
+      imageUrl: post.imageUrl,
+      authorId: post.authorId,
+      authorName: post.authorName,
+    }));
+  }
 }

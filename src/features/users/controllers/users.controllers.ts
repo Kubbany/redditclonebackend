@@ -14,6 +14,6 @@ export class UsersController {
   async getCurrentUser(
     @CurrentUser() user: JwtPayloadDTO,
   ): Promise<UserResponseDTO> {
-    return this.usersService.getCurrentUser(user);
+    return await this.usersService.getCurrentUser(user);
   }
 }
