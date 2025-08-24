@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -59,5 +60,14 @@ export class PostsController {
     @Body() updateDto: UpdatePostRequestDTO,
   ): Promise<UpdatePostResponseDTO> {
     return this.postsService.updatePost(postId, authorId, updateDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  async deletePost(
+    @Param('id') postId: number,
+    @CurrentUser('sub') authorId: number,
+  ): Promise<{ message: string }> {
+    return this.postsService.deletePost(postId, authorId);
   }
 }

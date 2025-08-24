@@ -99,4 +99,22 @@ export class PostsService {
       authorName: updatedPost.authorName,
     };
   }
+
+  async deletePost(
+    postId: number,
+    authorId: number,
+  ): Promise<{ message: string }> {
+    const post = await this.postsRepository.findOne({
+      where: { id: postId },
+    });
+    if (!post) {
+      throw new NotFoundException('Post Not Found');
+    }
+
+    if (post.authorId !== authorId) {
+      throw new ForbiddenException("You Can't Delete This Post");
+    }
+    await this.postsRepository.remove(post);
+    return { message: 'Post Deleted Successfully' };
+  }
 }
