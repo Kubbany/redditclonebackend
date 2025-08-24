@@ -4,6 +4,7 @@ import { Post } from '../entites/post.entity';
 import { Repository } from 'typeorm';
 import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
 import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
+import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
 
 @Injectable()
 export class PostsService {
@@ -33,5 +34,19 @@ export class PostsService {
       authorName: savedPost.authorName,
       createdAt: savedPost.createdAt,
     };
+  }
+
+  async getAllPosts(): Promise<GetPostsResponseDTO[]> {
+    const posts = await this.postsRepository.find({
+      order: { createdAt: 'DESC' },
+    });
+    return posts.map((post) => ({
+      id: post.id,
+      title: post.title,
+      description: post.description,
+      imageUrl: post.imageUrl,
+      authorId: post.authorId,
+      authorName: post.authorName,
+    }));
   }
 }

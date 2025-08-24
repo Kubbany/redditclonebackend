@@ -1,9 +1,16 @@
-import { Body, Controller, UseGuards, Post as HttpPost } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  UseGuards,
+  Post as HttpPost,
+  Get,
+} from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
 import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decorator';
 import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
+import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -17,5 +24,10 @@ export class PostsController {
     @Body() dto: CreatePostRequestDTO,
   ): Promise<CreatePostResponseDTO> {
     return await this.postsService.createPost(authorId, authorName, dto);
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  async getAllPosts(): Promise<GetPostsResponseDTO[]> {
+    return await this.postsService.getAllPosts();
   }
 }
