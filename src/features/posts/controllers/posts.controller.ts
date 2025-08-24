@@ -4,6 +4,7 @@ import {
   UseGuards,
   Post as HttpPost,
   Get,
+  Param,
 } from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -29,5 +30,10 @@ export class PostsController {
   @Get()
   async getAllPosts(): Promise<GetPostsResponseDTO[]> {
     return await this.postsService.getAllPosts();
+  }
+
+  @Get(':id')
+  async getPostById(@Param('id') id: number): Promise<GetPostsResponseDTO> {
+    return await this.postsService.getPostById(id);
   }
 }
