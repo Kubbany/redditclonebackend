@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateCommentResponseDTO } from '../dtos/create_comment_response.dto';
 import { CreateCommentRequestDTO } from '../dtos/create_comment_request.dto';
 import { Comment } from '../entites/comments.entity';
+import { GetCommentResponseDTO } from '../dtos/get_comments_response.dto';
 
 @Injectable()
 export class CommentsService {
@@ -42,5 +43,19 @@ export class CommentsService {
       postId: createdComment.postId,
       createdAt: createdComment.createdAt,
     };
+  }
+
+  async getCommentsByPostId(postId: number): Promise<GetCommentResponseDTO[]> {
+    const comments = await this.commentsRepository.find({
+      where: { postId },
+      order: { createdAt: 'DESC' },
+    });
+
+    return comments.map((comment) => ({
+      id: comment.id,
+      comment: comment.comment,
+      authorId: comment.authorId,
+      authorName: comment.authorName,
+    }));
   }
 }
