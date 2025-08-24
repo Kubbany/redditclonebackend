@@ -10,7 +10,7 @@ import { RegisterRequestDTO } from '../dtos/register_request.dto';
 import * as bcrypt from 'bcryptjs';
 import { RegisterResponseDTO } from '../dtos/register_response.dto';
 import { JwtService } from '@nestjs/jwt';
-import { LoginRequestDto } from '../dtos/login_request.dto';
+import { LoginRequestDTO } from '../dtos/login_request.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -37,7 +37,7 @@ export class AuthService {
     return { id: savedUser.id, name: savedUser.name, email: savedUser.email };
   }
 
-  async login(loginRequestDTO: LoginRequestDto): Promise<{ token: string }> {
+  async login(loginRequestDTO: LoginRequestDTO): Promise<{ token: string }> {
     const { email, password } = loginRequestDTO;
     const user = await this.authRepository.findOne({ where: { email } });
     if (!user) {

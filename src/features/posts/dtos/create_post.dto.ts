@@ -1,6 +1,6 @@
 import { IsOptional, IsString, Length } from 'class-validator';
 
-export class CreatePostDto {
+export class CreatePostDTO {
   @IsString()
   @Length(1, 300)
   title: string;
