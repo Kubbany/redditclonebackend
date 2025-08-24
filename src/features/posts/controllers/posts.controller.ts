@@ -1,31 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import {
-  Body,
-  Controller,
-  Req,
-  UseGuards,
-  Post as HttpPost,
-} from '@nestjs/common';
+import { Body, Controller, UseGuards, Post as HttpPost } from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatePostDTO } from '../dtos/create_post_request.dto';
-import { Post } from '../entites/post.entity';
+import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
+import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decorator';
+import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postService: PostsService) {}
+  constructor(private readonly postsService: PostsService) {}
 
   @UseGuards(AuthGuard('jwt'))
   @HttpPost()
   async createPost(
-    @Body() createPostDto: CreatePostDTO,
-    @Req() req,
-  ): Promise<Post> {
-    return this.postService.createPost(
-      req.user.id,
-      req.user.name,
-      createPostDto,
-    );
+    @CurrentUser('sub') authorId: number,
+    @CurrentUser('name') authorName: string,
+    @Body() dto: CreatePostRequestDTO,
+  ): Promise<CreatePostResponseDTO> {
+    return await this.postsService.createPost(authorId, authorName, dto);
   }
 }

@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../entites/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from '../dtos/create_post_request.dto';
+import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
+import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
 
 @Injectable()
 export class PostsService {
@@ -12,16 +13,25 @@ export class PostsService {
   async createPost(
     authorId: number,
     authorName: string,
-    createPostDto: CreatePostDTO,
-    imageUrl?: string,
-  ): Promise<Post> {
+    createPostRequestDto: CreatePostRequestDTO,
+  ): Promise<CreatePostResponseDTO> {
     const post = this.postsRepository.create({
-      title: createPostDto.title,
-      description: createPostDto.description,
-      imageUrl,
+      title: createPostRequestDto.title,
+      description: createPostRequestDto.description,
+      imageUrl: createPostRequestDto.imageUrl,
       authorId,
       authorName,
     });
-    return this.postsRepository.save(post);
+    const savedPost = await this.postsRepository.save(post);
+
+    return {
+      id: savedPost.id,
+      title: savedPost.title,
+      description: savedPost.description,
+      imageUrl: savedPost.imageUrl,
+      authorId: savedPost.authorId,
+      authorName: savedPost.authorName,
+      createdAt: savedPost.createdAt,
+    };
   }
 }

@@ -1,20 +1,19 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-
-import { RegisterResponseDTO } from '../../auth/dtos/register_response.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../services/users.services';
 import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decorator';
-import type { JwtPayload } from 'src/features/auth/decorators/get_current_user.decorator';
+import { UserResponseDTO } from '../dtos/user_response.dto';
+import { JwtPayloadDTO } from 'src/features/auth/dtos/jwt_payload.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('currentUser')
+  @Get('current-user')
   async getCurrentUser(
-    @CurrentUser() user: JwtPayload,
-  ): Promise<RegisterResponseDTO> {
+    @CurrentUser() user: JwtPayloadDTO,
+  ): Promise<UserResponseDTO> {
     return this.usersService.getCurrentUser(user);
   }
 }

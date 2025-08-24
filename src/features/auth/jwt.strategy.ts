@@ -2,6 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtPayloadDTO } from './dtos/jwt_payload.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -12,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get<string>('JWT_SECRET') as string,
     });
   }
-  validate(payload: { sub: number; name: string }) {
-    return { id: payload.sub, name: payload.name };
+  validate(payload: JwtPayloadDTO) {
+    return payload;
   }
 }

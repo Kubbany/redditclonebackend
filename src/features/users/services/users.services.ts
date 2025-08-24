@@ -2,8 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from '../entites/user.entity';
-import { RegisterResponseDTO } from '../../auth/dtos/register_response.dto';
-import { JwtPayload } from 'src/features/auth/decorators/get_current_user.decorator';
+import { UserResponseDTO } from '../dtos/user_response.dto';
+import { JwtPayloadDTO } from 'src/features/auth/dtos/jwt_payload.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,14 +12,14 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async getCurrentUser(payload: JwtPayload): Promise<RegisterResponseDTO> {
+  async getCurrentUser(payload: JwtPayloadDTO): Promise<UserResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
       select: ['id', 'name', 'email'],
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('User Not Found');
     }
 
     return { id: user.id, name: user.name, email: user.email };
