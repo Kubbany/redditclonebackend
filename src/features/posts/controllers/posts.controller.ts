@@ -16,7 +16,6 @@ import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
 import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
-import { log } from 'console';
 
 @Controller('posts')
 export class PostsController {
@@ -37,19 +36,18 @@ export class PostsController {
     return await this.postsService.getAllPosts();
   }
 
-  @Get(':id')
-  async getPostById(@Param('id') id: number): Promise<GetPostsResponseDTO> {
-    return await this.postsService.getPostById(id);
-  }
-
   @UseGuards(AuthGuard('jwt'))
   @Get('my-posts')
   async getMyPosts(
-    @CurrentUser('sub') userId: number,
+    @CurrentUser('sub') authorId: number,
   ): Promise<GetPostsResponseDTO[]> {
-    log(userId);
     const posts = await this.postsService.getAllPosts();
-    return posts.filter((post) => post.authorId === userId);
+    return posts.filter((post) => post.authorId == authorId);
+  }
+
+  @Get(':id')
+  async getPostById(@Param('id') id: number): Promise<GetPostsResponseDTO> {
+    return await this.postsService.getPostById(id);
   }
 
   @UseGuards(AuthGuard('jwt'))
