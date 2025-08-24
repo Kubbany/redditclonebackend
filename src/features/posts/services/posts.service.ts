@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   ForbiddenException,
   Injectable,
@@ -11,11 +12,15 @@ import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
 import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
+import { Comment } from 'src/features/comments/entites/comments.entity';
+import { log } from 'console';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
+    @InjectRepository(Comment)
+    private readonly commentsRepository: Repository<Post>,
   ) {}
   async createPost(
     authorId: number,
@@ -110,11 +115,13 @@ export class PostsService {
     if (!post) {
       throw new NotFoundException('Post Not Found');
     }
-
+    log(post.authorId);
+    log(authorId);
     if (post.authorId !== authorId) {
       throw new ForbiddenException("You Can't Delete This Post");
     }
-    await this.postsRepository.remove(post);
+    await this.commentsRepository.delete({ postId: postId } as any);
+    await this.postsRepository.delete(post);
     return { message: 'Post Deleted Successfully' };
   }
 }
