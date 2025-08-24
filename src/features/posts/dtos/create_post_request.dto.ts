@@ -8,4 +8,8 @@ export class CreatePostDTO {
   @IsOptional()
   @IsString()
   description: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }

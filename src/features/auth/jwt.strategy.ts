@@ -12,8 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get<string>('JWT_SECRET') as string,
     });
   }
-  validate(payload: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    return { id: payload.sub, username: payload.username };
+  validate(payload: { sub: number; name: string }) {
+    return { id: payload.sub, name: payload.name };
   }
 }

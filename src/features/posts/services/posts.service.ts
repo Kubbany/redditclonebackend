@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../entites/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from '../dtos/create_post.dto';
+import { CreatePostDTO } from '../dtos/create_post_request.dto';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post) private postsRepository: Repository<Post>,
+    @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
   ) {}
   async createPost(
     authorId: number,
@@ -16,10 +16,11 @@ export class PostsService {
     imageUrl?: string,
   ): Promise<Post> {
     const post = this.postsRepository.create({
-      ...createPostDto,
+      title: createPostDto.title,
+      description: createPostDto.description,
+      imageUrl,
       authorId,
       authorName,
-      imageUrl,
     });
     return this.postsRepository.save(post);
   }
