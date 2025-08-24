@@ -1,6 +1,6 @@
 export class GetCommentResponseDTO {
   id: number;
-  text: string;
+  comment: string;
   authorId: number;
   authorName: string;
 }

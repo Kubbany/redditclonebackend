@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { PostsModule } from './features/posts/posts.module';
+import { CommentsModule } from './features/comments/comments.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PostsModule } from './features/posts/posts.module';
     AuthModule,
     UsersModule,
     PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

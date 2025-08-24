@@ -1,4 +1,9 @@
+import { IsInt, IsNotEmpty } from 'class-validator';
+
 export class CreateCommentRequestDTO {
-  text: string;
+  @IsNotEmpty()
+  comment: string;
+
+  @IsInt()
   postId: number;
 }
