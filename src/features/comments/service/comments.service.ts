@@ -33,19 +33,19 @@ export class CommentsService {
       authorId,
       authorName,
     });
-    const createdComment = await this.commentsRepository.save(comment);
-
+    await this.commentsRepository.save(comment);
     return {
-      id: createdComment.id,
-      comment: createdComment.comment,
-      authorId: createdComment.authorId,
-      authorName: createdComment.authorName,
-      postId: createdComment.postId,
-      createdAt: createdComment.createdAt,
+      success: 'Success',
     };
   }
 
   async getCommentsByPostId(postId: number): Promise<GetCommentResponseDTO[]> {
+    const post = await this.postsRepository.findOne({
+      where: { id: postId },
+    });
+    if (!post) {
+      throw new NotFoundException('Post Not Found');
+    }
     const comments = await this.commentsRepository.find({
       where: { postId },
       order: { createdAt: 'DESC' },

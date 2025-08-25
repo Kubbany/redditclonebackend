@@ -13,9 +13,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
 import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decorator';
 import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
-import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
+import { GetPostsResponseDTO } from '../dtos/get_posts_response.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
+import { DeletePostResponseDTO } from '../dtos/delete_post_response.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -65,7 +66,7 @@ export class PostsController {
   async deletePost(
     @Param('id') postId: number,
     @CurrentUser('sub') authorId: number,
-  ): Promise<{ message: string }> {
+  ): Promise<DeletePostResponseDTO> {
     return this.postsService.deletePost(postId, authorId);
   }
 }

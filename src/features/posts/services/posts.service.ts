@@ -9,10 +9,11 @@ import { Post } from '../entites/post.entity';
 import { Repository } from 'typeorm';
 import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
 import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
-import { GetPostsResponseDTO } from '../dtos/get_posts_request.dto';
+import { GetPostsResponseDTO } from '../dtos/get_posts_response.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
 import { Comment } from 'src/features/comments/entites/comments.entity';
+import { DeletePostResponseDTO } from '../dtos/delete_post_response.dto';
 
 @Injectable()
 export class PostsService {
@@ -33,16 +34,9 @@ export class PostsService {
       authorId,
       authorName,
     });
-    const savedPost = await this.postsRepository.save(post);
-
+    await this.postsRepository.save(post);
     return {
-      id: savedPost.id,
-      title: savedPost.title,
-      description: savedPost.description,
-      imageUrl: savedPost.imageUrl,
-      authorId: savedPost.authorId,
-      authorName: savedPost.authorName,
-      createdAt: savedPost.createdAt,
+      success: 'Success',
     };
   }
 
@@ -93,21 +87,16 @@ export class PostsService {
     }
     post.title = updatePostRequestDto.title ?? post.title;
     post.description = updatePostRequestDto.description ?? post.description;
-    const updatedPost = await this.postsRepository.save(post);
+    await this.postsRepository.save(post);
     return {
-      id: updatedPost.id,
-      title: updatedPost.title,
-      description: updatedPost.description,
-      imageUrl: updatedPost.imageUrl,
-      authorId: updatedPost.authorId,
-      authorName: updatedPost.authorName,
+      success: 'Success',
     };
   }
 
   async deletePost(
     postId: number,
     authorId: number,
-  ): Promise<{ message: string }> {
+  ): Promise<DeletePostResponseDTO> {
     const post = await this.postsRepository.findOne({
       where: { id: postId },
     });
@@ -118,7 +107,7 @@ export class PostsService {
       throw new ForbiddenException("You Can't Delete This Post");
     }
     await this.commentsRepository.delete({ postId: postId } as any);
-    await this.postsRepository.delete(post);
-    return { message: 'Post Deleted Successfully' };
+    await this.postsRepository.remove(post);
+    return { success: 'Success' };
   }
 }

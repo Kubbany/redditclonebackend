@@ -5,7 +5,6 @@ export class CreatePostRequestDTO {
   @Length(1, 300)
   title: string;
 
-  @IsOptional()
   @IsString()
   description: string;
 
