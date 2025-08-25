@@ -15,13 +15,13 @@ export class UsersService {
   async getCurrentUser(payload: JwtPayloadDTO): Promise<UserResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
-      select: ['id', 'name', 'email'],
+      select: ['name', 'email'],
     });
 
     if (!user) {
       throw new UnauthorizedException('User Not Found');
     }
 
-    return { id: user.id, name: user.name, email: user.email };
+    return { name: user.name, email: user.email };
   }
 }

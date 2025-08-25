@@ -8,9 +8,9 @@ import { Repository } from 'typeorm';
 import User from '../../users/entites/user.entity';
 import { RegisterRequestDTO } from '../dtos/register_request.dto';
 import * as bcrypt from 'bcryptjs';
-import { RegisterResponseDTO } from '../dtos/register_response.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRequestDTO } from '../dtos/login_request.dto';
+import { RegisterResponseDTO } from '../dtos/register_response.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -33,8 +33,8 @@ export class AuthService {
       email,
       password: encryptedPassword,
     });
-    const savedUser = await this.authRepository.save(newUser);
-    return { id: savedUser.id, name: savedUser.name, email: savedUser.email };
+    await this.authRepository.save(newUser);
+    return { success: 'Success' };
   }
 
   async login(loginRequestDTO: LoginRequestDTO): Promise<{ token: string }> {
