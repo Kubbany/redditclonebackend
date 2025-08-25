@@ -39,6 +39,6 @@ export class VotesService {
       post.votesCount += value * 2;
     }
     await this.postsRepository.save(post);
-    return { postId: postId, votesCount: post.votesCount };
+    return { success: 'Success' };
   }
 }

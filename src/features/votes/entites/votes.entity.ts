@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  Unique,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 
 @Entity('votes')
 @Unique(['userId', 'postId'])
@@ -20,7 +14,4 @@ export class Vote {
 
   @Column()
   value: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
 }
