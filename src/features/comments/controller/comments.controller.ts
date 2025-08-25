@@ -13,12 +13,10 @@ export class CommentsController {
   @UseGuards(AuthGuard('jwt'))
   @Post()
   async createComment(
-    @CurrentUser('sub') authorId: number,
     @CurrentUser('name') authorName: string,
     @Body() createCommentRequestDto: CreateCommentRequestDTO,
   ): Promise<CreateCommentResponseDTO> {
     return this.commentsService.createComment(
-      authorId,
       authorName,
       createCommentRequestDto,
     );

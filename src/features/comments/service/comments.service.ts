@@ -17,7 +17,6 @@ export class CommentsService {
   ) {}
 
   async createComment(
-    authorId: number,
     authorName: string,
     createCommentRequestDto: CreateCommentRequestDTO,
   ): Promise<CreateCommentResponseDTO> {
@@ -30,7 +29,6 @@ export class CommentsService {
     const comment = this.commentsRepository.create({
       comment: createCommentRequestDto.comment,
       postId: createCommentRequestDto.postId,
-      authorId,
       authorName,
     });
     await this.commentsRepository.save(comment);
@@ -54,7 +52,6 @@ export class CommentsService {
     return comments.map((comment) => ({
       id: comment.id,
       comment: comment.comment,
-      authorId: comment.authorId,
       authorName: comment.authorName,
     }));
   }
