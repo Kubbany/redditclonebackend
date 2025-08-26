@@ -31,6 +31,11 @@ export const Messages = {
     USER_NOT_FOUND: 'User Not Found',
   },
 
+  VOTES: {
+    VOTE_SUCCESS: 'Succesfully Voted',
+    VOTE_FAILURE: 'Could Not Vote',
+  },
+
   GENERAL: {
     SERVER_ERROR: 'Something Went Wrong. Please Try Again Later.',
   },
