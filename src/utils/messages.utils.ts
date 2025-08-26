@@ -20,4 +20,8 @@ export const Messages = {
     DELETE_FAILURE: 'Could Not Delete Post',
     DELETE_FORBIDDEN: 'You Can Not Delete This Post',
   },
+
+  GENERAL: {
+    SERVER_ERROR: 'Something Went Wrong. Please Try Again Later.',
+  },
 };
