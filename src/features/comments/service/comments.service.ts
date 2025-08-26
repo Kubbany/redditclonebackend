@@ -1,11 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from 'src/features/posts/entites/post.entity';
 import { Repository } from 'typeorm';
-import { CreateCommentResponseDTO } from '../dtos/create_comment_response.dto';
 import { CreateCommentRequestDTO } from '../dtos/create_comment_request.dto';
 import { Comment } from '../entites/comments.entity';
 import { GetCommentResponseDTO } from '../dtos/get_comments_response.dto';
+import { ResponseDTO } from 'src/utils/dtos/response.dto';
+import { Messages } from 'src/utils/messages.utils';
 
 @Injectable()
 export class CommentsService {
@@ -19,40 +26,57 @@ export class CommentsService {
   async createComment(
     authorName: string,
     createCommentRequestDto: CreateCommentRequestDTO,
-  ): Promise<CreateCommentResponseDTO> {
-    const post = await this.postsRepository.findOne({
-      where: { id: createCommentRequestDto.postId },
-    });
-    if (!post) {
-      throw new NotFoundException('Post Not Found');
+  ): Promise<ResponseDTO> {
+    try {
+      const post = await this.postsRepository.findOne({
+        where: { id: createCommentRequestDto.postId },
+      });
+      if (!post) {
+        throw new NotFoundException(Messages.POSTS.POST_NOT_FOUND);
+      }
+      const comment = this.commentsRepository.create({
+        comment: createCommentRequestDto.comment,
+        postId: createCommentRequestDto.postId,
+        authorName,
+      });
+      await this.commentsRepository.save(comment);
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: Messages.COMMENTS.CREATE_SUCCESS,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(Messages.COMMENTS.CREATE_FAILURE);
     }
-    const comment = this.commentsRepository.create({
-      comment: createCommentRequestDto.comment,
-      postId: createCommentRequestDto.postId,
-      authorName,
-    });
-    await this.commentsRepository.save(comment);
-    return {
-      success: 'Success',
-    };
   }
 
   async getCommentsByPostId(postId: number): Promise<GetCommentResponseDTO[]> {
-    const post = await this.postsRepository.findOne({
-      where: { id: postId },
-    });
-    if (!post) {
-      throw new NotFoundException('Post Not Found');
-    }
-    const comments = await this.commentsRepository.find({
-      where: { postId },
-      order: { createdAt: 'DESC' },
-    });
+    try {
+      const post = await this.postsRepository.findOne({
+        where: { id: postId },
+      });
+      if (!post) {
+        throw new NotFoundException(Messages.POSTS.POST_NOT_FOUND);
+      }
+      const comments = await this.commentsRepository.find({
+        where: { postId },
+        order: { createdAt: 'DESC' },
+      });
 
-    return comments.map((comment) => ({
-      id: comment.id,
-      comment: comment.comment,
-      authorName: comment.authorName,
-    }));
+      return comments.map((comment) => ({
+        id: comment.id,
+        comment: comment.comment,
+        authorName: comment.authorName,
+      }));
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        Messages.COMMENTS.GET_COMMENTS_FAILURE,
+      );
+    }
   }
 }

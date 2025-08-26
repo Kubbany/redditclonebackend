@@ -3,8 +3,8 @@ import { CommentsService } from '../service/comments.service';
 import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateCommentRequestDTO } from '../dtos/create_comment_request.dto';
-import { CreateCommentResponseDTO } from '../dtos/create_comment_response.dto';
 import { GetCommentResponseDTO } from '../dtos/get_comments_response.dto';
+import { ResponseDTO } from 'src/utils/dtos/response.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -15,7 +15,7 @@ export class CommentsController {
   async createComment(
     @CurrentUser('name') authorName: string,
     @Body() createCommentRequestDto: CreateCommentRequestDTO,
-  ): Promise<CreateCommentResponseDTO> {
+  ): Promise<ResponseDTO> {
     return this.commentsService.createComment(
       authorName,
       createCommentRequestDto,

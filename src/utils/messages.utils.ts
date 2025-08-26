@@ -21,6 +21,12 @@ export const Messages = {
     DELETE_FORBIDDEN: 'You Can Not Delete This Post',
   },
 
+  COMMENTS: {
+    CREATE_SUCCESS: 'Comment Created Succesfully',
+    CREATE_FAILURE: 'Could Not Create Comment',
+    GET_COMMENTS_FAILURE: 'Failed to Get This Post Comments',
+  },
+
   USER: {
     USER_NOT_FOUND: 'User Not Found',
   },
