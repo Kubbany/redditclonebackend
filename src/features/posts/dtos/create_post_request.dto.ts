@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Length } from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 export class CreatePostRequestDTO {
   @IsString()
@@ -7,8 +7,4 @@ export class CreatePostRequestDTO {
 
   @IsString()
   description: string;
-
-  @IsOptional()
-  @IsString()
-  imageUrl?: string;
 }

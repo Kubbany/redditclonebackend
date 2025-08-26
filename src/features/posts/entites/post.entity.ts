@@ -19,6 +19,9 @@ export class Post {
   @Column({ nullable: true })
   imageUrl: string;
 
+  @Column({ nullable: true })
+  imagePublicId: string;
+
   @Column({ default: 0 })
   votesCount: number;
 

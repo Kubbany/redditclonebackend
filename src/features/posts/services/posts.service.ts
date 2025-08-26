@@ -17,24 +17,36 @@ import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { Comment } from 'src/features/comments/entites/comments.entity';
 import { ResponseDTO } from 'src/utils/dtos/response.dto';
 import { Messages } from 'src/utils/messages.utils';
+import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
     @InjectRepository(Comment)
-    private readonly commentsRepository: Repository<Post>,
+    private readonly commentsRepository: Repository<Comment>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
   async createPost(
     authorId: number,
     authorName: string,
     createPostRequestDto: CreatePostRequestDTO,
+    file?: Express.Multer.File,
   ): Promise<ResponseDTO> {
     try {
+      let uploadedUrl: string | undefined;
+      let uploadedPublicId: string | undefined;
+
+      if (file) {
+        const res = await this.cloudinaryService.uploadImageFromBuffer(file);
+        uploadedUrl = res.secure_url;
+        uploadedPublicId = res.public_id;
+      }
       const post = this.postsRepository.create({
         title: createPostRequestDto.title,
         description: createPostRequestDto.description,
-        imageUrl: createPostRequestDto.imageUrl,
+        imageUrl: uploadedUrl,
+        imagePublicId: uploadedPublicId,
         authorId,
         authorName,
       });
@@ -64,6 +76,11 @@ export class PostsService {
     } catch (error) {
       throw new InternalServerErrorException(Messages.POSTS.GET_POSTS_FAILURE);
     }
+  }
+
+  async getMyPosts(authorId: number): Promise<GetPostsResponseDTO[]> {
+    const posts = await this.getAllPosts();
+    return posts.filter((p) => p.authorId === authorId);
   }
 
   async updatePost(
@@ -101,14 +118,22 @@ export class PostsService {
       const post = await this.postsRepository.findOne({
         where: { id: postId },
       });
+
       if (!post) {
         throw new NotFoundException(Messages.POSTS.POST_NOT_FOUND);
       }
+
       if (post.authorId !== authorId) {
         throw new ForbiddenException(Messages.POSTS.DELETE_FORBIDDEN);
       }
+
+      if (post.imagePublicId) {
+        await this.cloudinaryService.deleteByPublicId(post.imagePublicId);
+      }
+
       await this.commentsRepository.delete({ postId: postId } as any);
       await this.postsRepository.remove(post);
+
       return {
         statusCode: HttpStatus.OK,
         message: Messages.POSTS.DELETE_SUCCESS,

@@ -7,6 +7,8 @@ import {
   Param,
   Put,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,6 +17,7 @@ import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decor
 import { GetPostsResponseDTO } from '../dtos/get_posts_response.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
 import { ResponseDTO } from 'src/utils/dtos/response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('posts')
 export class PostsController {
@@ -22,12 +25,14 @@ export class PostsController {
 
   @UseGuards(AuthGuard('jwt'))
   @HttpPost()
+  @UseInterceptors(FileInterceptor('image'))
   async createPost(
     @CurrentUser('sub') authorId: number,
     @CurrentUser('name') authorName: string,
     @Body() dto: CreatePostRequestDTO,
+    @UploadedFile() file?: Express.Multer.File,
   ): Promise<ResponseDTO> {
-    return await this.postsService.createPost(authorId, authorName, dto);
+    return await this.postsService.createPost(authorId, authorName, dto, file);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get()
@@ -40,8 +45,7 @@ export class PostsController {
   async getMyPosts(
     @CurrentUser('sub') authorId: number,
   ): Promise<GetPostsResponseDTO[]> {
-    const posts = await this.postsService.getAllPosts();
-    return posts.filter((post) => post.authorId == authorId);
+    return await this.postsService.getMyPosts(authorId);
   }
 
   @UseGuards(AuthGuard('jwt'))

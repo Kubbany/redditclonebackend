@@ -36,6 +36,11 @@ export const Messages = {
     VOTE_FAILURE: 'Could Not Vote',
   },
 
+  IMAGES: {
+    IMAGE_UPLOAD_FAILURE: 'Image Upload Failed',
+    IMAGE_DELETE_FAILURE: 'Image Delete Failed',
+  },
+
   GENERAL: {
     SERVER_ERROR: 'Something Went Wrong. Please Try Again Later.',
   },
