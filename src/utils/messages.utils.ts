@@ -21,6 +21,10 @@ export const Messages = {
     DELETE_FORBIDDEN: 'You Can Not Delete This Post',
   },
 
+  USER: {
+    USER_NOT_FOUND: 'User Not Found',
+  },
+
   GENERAL: {
     SERVER_ERROR: 'Something Went Wrong. Please Try Again Later.',
   },
