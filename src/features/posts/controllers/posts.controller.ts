@@ -12,11 +12,9 @@ import { PostsService } from '../services/posts.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatePostRequestDTO } from '../dtos/create_post_request.dto';
 import { CurrentUser } from 'src/features/auth/decorators/get_current_user.decorator';
-import { CreatePostResponseDTO } from '../dtos/create_post_response.dto';
 import { GetPostsResponseDTO } from '../dtos/get_posts_response.dto';
 import { UpdatePostRequestDTO } from '../dtos/update_post_request.dto';
-import { UpdatePostResponseDTO } from '../dtos/update_post_response.dto';
-import { DeletePostResponseDTO } from '../dtos/delete_post_response.dto';
+import { ResponseDTO } from 'src/utils/dtos/response.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -28,7 +26,7 @@ export class PostsController {
     @CurrentUser('sub') authorId: number,
     @CurrentUser('name') authorName: string,
     @Body() dto: CreatePostRequestDTO,
-  ): Promise<CreatePostResponseDTO> {
+  ): Promise<ResponseDTO> {
     return await this.postsService.createPost(authorId, authorName, dto);
   }
   @UseGuards(AuthGuard('jwt'))
@@ -57,7 +55,7 @@ export class PostsController {
     @Param('id') postId: number,
     @CurrentUser('sub') authorId: number,
     @Body() updateDto: UpdatePostRequestDTO,
-  ): Promise<UpdatePostResponseDTO> {
+  ): Promise<ResponseDTO> {
     return this.postsService.updatePost(postId, authorId, updateDto);
   }
 
@@ -66,7 +64,7 @@ export class PostsController {
   async deletePost(
     @Param('id') postId: number,
     @CurrentUser('sub') authorId: number,
-  ): Promise<DeletePostResponseDTO> {
+  ): Promise<ResponseDTO> {
     return this.postsService.deletePost(postId, authorId);
   }
 }
