@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRequestDTO } from '../dtos/login_request.dto';
 import { RegisterResponseDTO } from '../dtos/register_response.dto';
+import { Messages } from 'src/utils/messages.utils';
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,7 +27,7 @@ export class AuthService {
     const { email, name, password } = registerRequestDTO;
     const userExist = await this.authRepository.findOne({ where: { email } });
     if (userExist) {
-      throw new ConflictException('Email Already Exists');
+      throw new ConflictException(Messages.AUTH.REGISTER_EMAIL_EXISTS);
     }
     const encryptedPassword = await bcrypt.hash(password, 10);
     const newUser = this.authRepository.create({
@@ -34,18 +36,21 @@ export class AuthService {
       password: encryptedPassword,
     });
     await this.authRepository.save(newUser);
-    return { success: 'Success' };
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: Messages.AUTH.REGISTER_SUCCESS,
+    };
   }
 
   async login(loginRequestDTO: LoginRequestDTO): Promise<{ token: string }> {
     const { email, password } = loginRequestDTO;
     const user = await this.authRepository.findOne({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException('Invalid Email or Password');
+      throw new UnauthorizedException(Messages.AUTH.LOGIN_FAILURE);
     }
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throw new UnauthorizedException('Invalid Email or Password');
+      throw new UnauthorizedException(Messages.AUTH.LOGIN_FAILURE);
     }
     const token = this.jwtService.sign({ sub: user.id, name: user.name });
     return { token };

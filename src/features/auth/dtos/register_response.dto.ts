@@ -1,3 +1,4 @@
 export class RegisterResponseDTO {
-  success: string;
+  statusCode: number;
+  message: string;
 }
