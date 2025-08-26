@@ -44,11 +44,6 @@ export class PostsController {
     return posts.filter((post) => post.authorId == authorId);
   }
 
-  @Get(':id')
-  async getPostById(@Param('id') id: number): Promise<GetPostsResponseDTO> {
-    return await this.postsService.getPostById(id);
-  }
-
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async updatePost(

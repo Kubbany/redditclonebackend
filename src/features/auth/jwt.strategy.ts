@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get<string>('JWT_SECRET') as string,
     });
   }
-  validate(payload: JwtPayloadDTO) {
+  validate(payload: JwtPayloadDTO): JwtPayloadDTO {
     return payload;
   }
 }

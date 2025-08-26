@@ -66,30 +66,6 @@ export class PostsService {
     }
   }
 
-  async getPostById(id: number): Promise<GetPostsResponseDTO> {
-    try {
-      const post = await this.postsRepository.findOne({
-        where: { id },
-      });
-      if (!post) {
-        throw new NotFoundException(Messages.POSTS.POST_NOT_FOUND);
-      }
-      return {
-        id: post.id,
-        title: post.title,
-        description: post.description,
-        imageUrl: post.imageUrl,
-        authorId: post.authorId,
-        authorName: post.authorName,
-      };
-    } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(Messages.POSTS.GET_POST_FAILURE);
-    }
-  }
-
   async updatePost(
     postId: number,
     authorId: number,
