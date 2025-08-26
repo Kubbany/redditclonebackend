@@ -1,4 +1,4 @@
-export class RegisterResponseDTO {
+export class ResponseDTO {
   statusCode: number;
   message: string;
 }
